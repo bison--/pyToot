@@ -12,7 +12,7 @@ headers = {"Authorization": "Bearer " + conf.ACCESS_TOKEN}
 
 # Get the latest toots from the home timeline
 def get_toots(max_id=None):
-    params = {"limit": 10}
+    params = {"limit": conf.SHOW_TOOTS_AT_ONCE}
     if max_id:
         params["max_id"] = max_id
     response = requests.get(base_url + "timelines/home", headers=headers, params=params)
@@ -61,7 +61,6 @@ def display_toots(toots):
             print("\n" + toot["content"].strip())
             for attachment in toot.get("media_attachments", []):
                 print("Image URL: " + attachment["url"])
-
 
 
 def read_toots():
