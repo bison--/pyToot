@@ -23,17 +23,45 @@ def get_toots(max_id=None):
         return []
 
 
+# Get the original toot for a repost
+def get_original_toot(repost_id):
+    response = requests.get(base_url + "statuses/" + str(repost_id), headers=headers)
+    if response.status_code == 200:
+        return response.json()
+    else:
+        print("Error retrieving original toot.")
+        return {}
+
+
 # Display the toots in the terminal
 def display_toots(toots):
     for toot in toots:
-        toot_time = datetime.strptime(toot["created_at"], "%Y-%m-%dT%H:%M:%S.%fZ")
-        current_time = datetime.utcnow()
-        time_difference = current_time - toot_time
-        print("=" * 20)
-        print("Username: @" + toot["account"]["username"])
-        print("Tooted on: " + toot_time.strftime("%Y-%m-%d %H:%M:%S"))
-        print("Time difference: " + str(time_difference))
-        print("\n" + toot["content"])
+        if toot.get("reblog") is not None:
+            original_toot = get_original_toot(toot["reblog"]["id"])
+            original_toot_time = datetime.strptime(original_toot["created_at"], "%Y-%m-%dT%H:%M:%S.%fZ")
+            current_time = datetime.utcnow()
+            time_difference = current_time - original_toot_time
+            print("=" * 20)
+            print("** reTOOT **")
+            print("Retooted by: @" + toot["account"]["username"])
+            print("Username: @" + original_toot["account"]["username"])
+            print("Tooted on: " + original_toot_time.strftime("%Y-%m-%d %H:%M:%S"))
+            print("Ago: " + str(time_difference))
+            print("\n" + original_toot["content"].strip())
+            for attachment in original_toot.get("media_attachments", []):
+                print("Image URL: " + attachment["url"])
+        else:
+            toot_time = datetime.strptime(toot["created_at"], "%Y-%m-%dT%H:%M:%S.%fZ")
+            current_time = datetime.utcnow()
+            time_difference = current_time - toot_time
+            print("=" * 20)
+            print("Username: @" + toot["account"]["username"])
+            print("Tooted on: " + toot_time.strftime("%Y-%m-%d %H:%M:%S"))
+            print("Ago: " + str(time_difference))
+            print("\n" + toot["content"].strip())
+            for attachment in toot.get("media_attachments", []):
+                print("Image URL: " + attachment["url"])
+
 
 
 def read_toots():
