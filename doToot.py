@@ -1,5 +1,5 @@
 import requests
-import conf
+import conf_loader as conf
 
 
 def do_toot():
@@ -41,4 +41,4 @@ def do_toot():
     if response.status_code == 200:
         print("Toot published!")
     else:
-        print("Error publishing Toot.")
+        print("Error publishing Toot. Error Code:", response.status_code)

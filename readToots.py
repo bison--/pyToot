@@ -1,6 +1,6 @@
 import requests
 from datetime import datetime
-import conf
+import conf_loader as conf
 
 
 # API endpoint for Mastodon
