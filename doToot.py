@@ -14,7 +14,7 @@ def do_toot():
     response = requests.get(base_url + "accounts/verify_credentials", headers=headers)
 
     visibility = 'private'  # fallback
-    language = 'english'  # fallback
+    language = ''
     if response.status_code == 200:
         visibility = response.json()["source"]["privacy"]
         language = response.json()["source"]["language"]  # iso2
