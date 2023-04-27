@@ -47,6 +47,7 @@ def display_toots(toots):
             print("Username: @" + original_toot["account"]["username"])
             print("Tooted on: " + original_toot_time.strftime("%Y-%m-%d %H:%M:%S"))
             print("Ago: " + str(time_difference))
+            print("Toot-URL:", original_toot['url'])
             print("\n" + original_toot["content"].strip())
             for attachment in original_toot.get("media_attachments", []):
                 print("Image URL: " + attachment["url"])
@@ -58,6 +59,7 @@ def display_toots(toots):
             print("Username: @" + toot["account"]["username"])
             print("Tooted on: " + toot_time.strftime("%Y-%m-%d %H:%M:%S"))
             print("Ago: " + str(time_difference))
+            print("Toot-URL:", toot['url'])
             print("\n" + toot["content"].strip())
             for attachment in toot.get("media_attachments", []):
                 print("Image URL: " + attachment["url"])
