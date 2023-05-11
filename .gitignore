@@ -161,3 +161,4 @@ cython_debug/
 
 # my
 conf_local.py
+cache/

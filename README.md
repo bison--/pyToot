@@ -4,9 +4,16 @@ a simple mastodon terminal client in python
 ## setup
 
 Best you use the `requirements.txt`  
+For images in terminal use `requirements-full.txt` (that's a big installation!)    
 
+basic:  
 ```shell
 pip install -r requirements.txt
+```
+
+full:  
+```shell
+pip install -r requirements-full.txt
 ```
 
 ## config

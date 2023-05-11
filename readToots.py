@@ -1,6 +1,7 @@
 import requests
 import html2text
 from datetime import datetime
+from inc.TerminalImage import TerminalImage
 import conf_loader as conf
 
 
@@ -12,6 +13,7 @@ headers = {"Authorization": "Bearer " + conf.ACCESS_TOKEN}
 
 html_converter = html2text.HTML2Text()
 html_converter.body_width = 0
+terminal_image = TerminalImage()
 
 
 # Get the latest toots from the home timeline
@@ -39,6 +41,9 @@ def get_original_toot(repost_id):
 
 def print_media_attachments(attachments):
     for attachment in attachments:
+        if attachment["type"] == 'image':
+            terminal_image.render_image(attachment["url"])
+
         print(attachment["type"] + ":", attachment["url"])
         print("Description:", attachment["description"])
 
