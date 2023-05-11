@@ -1,4 +1,5 @@
 import requests
+import html2text
 from datetime import datetime
 import conf_loader as conf
 
@@ -8,6 +9,9 @@ base_url = "https://{}/api/v1/".format(conf.INSTANCE_DOMAIN)
 
 # Authentication details
 headers = {"Authorization": "Bearer " + conf.ACCESS_TOKEN}
+
+html_converter = html2text.HTML2Text()
+html_converter.body_width = 0
 
 
 # Get the latest toots from the home timeline
@@ -33,6 +37,12 @@ def get_original_toot(repost_id):
         return {}
 
 
+def print_media_attachments(attachments):
+    for attachment in attachments:
+        print(attachment["type"] + ":", attachment["url"])
+        print("Description:", attachment["description"])
+
+
 # Display the toots in the terminal
 def display_toots(toots):
     for toot in toots:
@@ -48,9 +58,8 @@ def display_toots(toots):
             print("Tooted on: " + original_toot_time.strftime("%Y-%m-%d %H:%M:%S"))
             print("Ago: " + str(time_difference))
             print("Toot-URL:", original_toot['url'])
-            print("\n" + original_toot["content"].strip())
-            for attachment in original_toot.get("media_attachments", []):
-                print("Image URL: " + attachment["url"])
+            print("\n" + html_converter.handle(original_toot["content"]).strip())
+            print_media_attachments(original_toot.get("media_attachments", []))
         else:
             toot_time = datetime.strptime(toot["created_at"], "%Y-%m-%dT%H:%M:%S.%fZ")
             current_time = datetime.utcnow()
@@ -60,9 +69,8 @@ def display_toots(toots):
             print("Tooted on: " + toot_time.strftime("%Y-%m-%d %H:%M:%S"))
             print("Ago: " + str(time_difference))
             print("Toot-URL:", toot['url'])
-            print("\n" + toot["content"].strip())
-            for attachment in toot.get("media_attachments", []):
-                print("Image URL: " + attachment["url"])
+            print("\n" + html_converter.handle(toot["content"]).strip())
+            print_media_attachments(toot.get("media_attachments", []))
 
 
 def read_toots():
@@ -81,3 +89,7 @@ def read_toots():
             display_toots(toots)
         else:
             break
+
+
+if __name__ == '__main__':
+    read_toots()
