@@ -1,4 +1,4 @@
 requests~=2.29.0
 html2text~=2020.1.16
 scikit-image==0.19.3  # hard set, img2unicode didn't pin the version but needs this one
-img2unicode==0.1a10
+img2unicode==0.1a11
