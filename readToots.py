@@ -17,10 +17,15 @@ terminal_image = TerminalImage()
 
 
 # Get the latest toots from the home timeline
-def get_toots(max_id=None):
-    params = {"limit": conf.SHOW_TOOTS_AT_ONCE}
+def get_toots(max_id=None, limit=conf.SHOW_TOOTS_AT_ONCE):
+    params = {}
+
     if max_id:
         params["max_id"] = max_id
+
+    if limit:
+        params["limit"] = limit
+
     response = requests.get(base_url + "timelines/home", headers=headers, params=params)
     if response.status_code == 200:
         return response.json()
