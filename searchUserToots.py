@@ -41,29 +41,39 @@ def toot_contains(toot, search_term):
     return False
 
 
-def save_toots(_toots, _user_id):
+def save_toots(_toots, _user_id, stop_on_cache_hit):
     for toot in _toots:
-        cacher.save_user_toot(toot, _user_id)
+        if not cacher.save_user_toot(toot, _user_id):
+            if stop_on_cache_hit:
+                print('Toot already cached', toot['url'])
+                return False
+
+    return True
 
 
-def download_toots(_user_id):
-    toot_counter = 0
+def download_toots(_user_id, stop_on_cache_hit):
     cacher.create_user_toots_dir(_user_id)
 
+    # always download the first block
     toots = mastodon_helper.get_toots_from_user_id(_user_id, None)
-    save_toots(toots, _user_id)
+    save_toots(toots, _user_id, False)
+
     toot_counter = len(toots)
     print('Toots:', len(toots))
 
     keep_running = True
     while keep_running:
         toots = mastodon_helper.get_toots_from_user_id(_user_id, toots[-1]["id"])
-        save_toots(toots, _user_id)
+        all_toots_new = save_toots(toots, _user_id, stop_on_cache_hit)
 
         toot_counter += len(toots)
         print('Toots:', len(toots), toot_counter)
 
-        keep_running = len(toots) > 0
+        if stop_on_cache_hit and not all_toots_new:
+            print('Cache hit, stopping.')
+            keep_running = False
+        else:
+            keep_running = len(toots) > 0
 
 
 def do_search():
@@ -81,8 +91,13 @@ def do_download():
     if user_name == '':
         user_name = "@bison@mastodon.social"
 
+    stop_on_cache_hit = True
+    stop_on_cache_hit_user = input("Stop in first cache hit? (Y/n)")
+    if stop_on_cache_hit_user == 'n':
+        stop_on_cache_hit = False
+
     user_id = mastodon_helper.get_mastodon_id(user_name)
-    download_toots(user_id)
+    download_toots(user_id, stop_on_cache_hit)
 
 
 if __name__ == '__main__':
