@@ -18,7 +18,9 @@ cacher = Cacher()
 
 def search_user_toots(_user_name, search_term):
     user_id = mastodon_helper.get_mastodon_id(_user_name)
+    toot_count = 0
     for toot in cacher.get_all_cached_user_toots(user_id):
+        toot_count += 1
         if toot_contains(toot, search_term):
             readToots.display_toots([toot])
 
@@ -26,6 +28,10 @@ def search_user_toots(_user_name, search_term):
             #print(toot["url"])
             #print(toot["content"])
             #print('*************')
+
+    if toot_count == 0:
+        print('No local cached toots found for user: {0} ({1})'.format(_user_name, user_id))
+        print('Please download toots first with option 3 in the main menu.')
 
 
 def toot_contains(toot, search_term):
