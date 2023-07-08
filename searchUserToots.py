@@ -76,6 +76,31 @@ def download_toots(_user_id, stop_on_cache_hit):
             keep_running = len(toots) > 0
 
 
+def download_bookmarks(_user_id, stop_on_cache_hit):
+    cacher.create_user_toots_dir(_user_id)
+
+    # always download the first block
+    toots = mastodon_helper.get_bookmarks_from_user()
+    save_toots(toots, _user_id, False)
+
+    toot_counter = len(toots)
+    print('Toots:', len(toots))
+
+    keep_running = True
+    while keep_running:
+        toots = mastodon_helper.get_bookmarks_from_user(toots[-1]["id"])
+        all_toots_new = save_toots(toots, _user_id, stop_on_cache_hit)
+
+        toot_counter += len(toots)
+        print('Toots:', len(toots), toot_counter)
+
+        if stop_on_cache_hit and not all_toots_new:
+            print('Cache hit, stopping.')
+            keep_running = False
+        else:
+            keep_running = len(toots) > 0
+
+
 def do_search():
     user_name = input("Enter user name/handle: ")
     if user_name == '':
@@ -92,12 +117,19 @@ def do_download():
         user_name = "@bison@mastodon.social"
 
     stop_on_cache_hit = True
-    stop_on_cache_hit_user = input("Stop in first cache hit? (Y/n)")
+    stop_on_cache_hit_user = input("Download Toots: Stop in first cache hit? (Y/n)")
     if stop_on_cache_hit_user == 'n':
         stop_on_cache_hit = False
 
     user_id = mastodon_helper.get_mastodon_id(user_name)
     download_toots(user_id, stop_on_cache_hit)
+
+    # currently broken
+    #stop_on_cache_hit_user = input("Download Bookmarks: Stop in first cache hit? (Y/n)")
+    #if stop_on_cache_hit_user == 'n':
+    #    stop_on_cache_hit = False
+
+    #download_bookmarks(user_id, stop_on_cache_hit)
 
 
 if __name__ == '__main__':

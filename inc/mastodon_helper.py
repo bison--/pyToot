@@ -32,6 +32,26 @@ def get_toots_from_user_id(user_id, max_id=None, limit=conf.SHOW_TOOTS_AT_ONCE):
         return []
 
 
+def get_bookmarks_from_user(max_id=None, limit=conf.SHOW_TOOTS_AT_ONCE):
+    params = {}
+
+    if max_id:
+        params["max_id"] = max_id
+
+    if limit:
+        params["limit"] = limit
+
+    #response = requests.get(base_url + "timelines/tag/" + username, headers=headers, params=params)
+    #https://docs.joinmastodon.org/methods/accounts/#statuses
+    #/api/v1/accounts/:id/statuses
+    response = requests.get(base_url + f"bookmarks", headers=headers, params=params)
+    if response.status_code == 200:
+        return response.json()
+    else:
+        print("Error retrieving toots.")
+        return []
+
+
 def get_mastodon_id(user_name):
     response = requests.get(base_url + f"accounts/lookup?acct=" + user_name, headers=headers)
     response.raise_for_status()  # Raise exception if the request failed
