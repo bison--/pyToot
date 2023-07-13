@@ -12,3 +12,6 @@ if TERMINAL_IMAGES:
     except ModuleNotFoundError:
         print('img2unicode is not installed, disabling TERMINAL_IMAGES')
         TERMINAL_IMAGES = False
+
+INSTANCE_HANDLE = '@' + INSTANCE_NAME + '@' + INSTANCE_DOMAIN
+

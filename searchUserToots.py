@@ -102,19 +102,20 @@ def download_bookmarks(_user_id, stop_on_cache_hit):
 
 
 def do_search():
-    user_name = input("Enter user name/handle: ")
+    user_name = input("Enter user name/handle (default: " + conf.INSTANCE_HANDLE + "): ")
+
     if user_name == '':
-        user_name = "@bison@mastodon.social"
+        user_name = conf.INSTANCE_HANDLE
 
     search_for = input("Enter search term: ")
     search_user_toots(user_name, search_for)
 
 
 def do_download():
-    user_name = input("Enter user name/handle: ")
+    user_name = input("Enter user name/handle (default: " + conf.INSTANCE_HANDLE + "): ")
 
     if user_name == '':
-        user_name = "@bison@mastodon.social"
+        user_name = conf.INSTANCE_HANDLE
 
     stop_on_cache_hit = True
     stop_on_cache_hit_user = input("Download Toots: Stop in first cache hit? (Y/n)")

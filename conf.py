@@ -4,6 +4,7 @@
 
 ACCESS_TOKEN = '<your access token HERE>'
 INSTANCE_DOMAIN = 'mastodon.social'
+INSTANCE_NAME = 'your_name_here'  # without @!
 LANGUAGE = 'en'
 SHOW_TOOTS_AT_ONCE = 10
 
