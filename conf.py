@@ -2,9 +2,9 @@
 # copy this file to `conf_local.py` and make your changes there
 # recommended: only have variables in `conf_local.py` which you actually change
 
-ACCESS_TOKEN = '<your access token HERE>'
+ACCESS_TOKEN = '<your access token HERE>'  # REQUIRED
 INSTANCE_DOMAIN = 'mastodon.social'
-INSTANCE_NAME = 'your_name_here'  # without @!
+INSTANCE_USER_HANDLE = ''  # REQUIRED, without @!
 LANGUAGE = 'en'
 SHOW_TOOTS_AT_ONCE = 10
 

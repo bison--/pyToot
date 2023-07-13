@@ -13,5 +13,8 @@ if TERMINAL_IMAGES:
         print('img2unicode is not installed, disabling TERMINAL_IMAGES')
         TERMINAL_IMAGES = False
 
-INSTANCE_HANDLE = '@' + INSTANCE_NAME + '@' + INSTANCE_DOMAIN
+if INSTANCE_USER_HANDLE == '' or INSTANCE_USER_HANDLE.startswith('<'):
+    print('INSTANCE_USER_HANDLE is not set, please set it in conf_local.py')
+
+INSTANCE_HANDLE = '@' + INSTANCE_USER_HANDLE + '@' + INSTANCE_DOMAIN
 

@@ -2,6 +2,9 @@ import requests
 import html2text
 from datetime import datetime
 from inc.TerminalImage import TerminalImage
+from inc.TootRendererBase import TootRendererBase
+from inc.TootRendererSimple import TootRendererSimple
+from inc.TootRendererSimpleImages import TootRendererSimpleImages
 import conf_loader as conf
 
 
@@ -56,31 +59,25 @@ def print_media_attachments(attachments):
 # Display the toots in the terminal
 def display_toots(toots):
     for toot in toots:
+        original_toot = None
+        retoot = None
+
         if toot.get("reblog") is not None:
+            retoot = toot
             original_toot = get_original_toot(toot["reblog"]["id"])
-            original_toot_time = datetime.strptime(original_toot["created_at"], "%Y-%m-%dT%H:%M:%S.%fZ")
-            current_time = datetime.utcnow()
-            time_difference = current_time - original_toot_time
-            print("=" * 20)
-            print("** reTOOT **")
-            print("Retooted by: @" + toot["account"]["username"])
-            print("Username: @" + original_toot["account"]["username"])
-            print("Tooted on: " + original_toot_time.strftime("%Y-%m-%d %H:%M:%S"))
-            print("Ago: " + str(time_difference))
-            print("Toot-URL:", original_toot['url'])
-            print("\n" + html_converter.handle(original_toot["content"]).strip())
-            print_media_attachments(original_toot.get("media_attachments", []))
         else:
-            toot_time = datetime.strptime(toot["created_at"], "%Y-%m-%dT%H:%M:%S.%fZ")
-            current_time = datetime.utcnow()
-            time_difference = current_time - toot_time
-            print("=" * 20)
-            print("Username: @" + toot["account"]["username"])
-            print("Tooted on: " + toot_time.strftime("%Y-%m-%d %H:%M:%S"))
-            print("Ago: " + str(time_difference))
-            print("Toot-URL:", toot['url'])
-            print("\n" + html_converter.handle(toot["content"]).strip())
-            print_media_attachments(toot.get("media_attachments", []))
+            original_toot = toot
+
+        toot_renderer: TootRendererBase
+        if conf.TERMINAL_IMAGES:
+            toot_renderer = TootRendererSimpleImages(original_toot, retoot)
+        else:
+            toot_renderer = TootRendererSimple(original_toot, retoot)
+        toot_renderer.render()
+
+        print('#' * 80)
+
+    return
 
 
 def read_toots():
