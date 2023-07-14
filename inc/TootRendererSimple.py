@@ -11,10 +11,10 @@ class TootRendererSimple(TootRendererBase):
 
     def render(self):
         if self.retoot is not None:
-            self.__render_retoot()
+            self._render_retoot()
 
-        self.__render_toot()
-        self.__render_media_attachments()
+        self._render_toot()
+        self._render_media_attachments()
 
     def _render_toot(self):
         print("Username: @" + self.toot["account"]["username"], "Toot-URL:", self.toot['url'])

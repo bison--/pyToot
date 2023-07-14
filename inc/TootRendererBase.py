@@ -8,11 +8,11 @@ class TootRendererBase:
     def render(self):
         raise NotImplementedError()
 
-    def __render_toot(self):
+    def _render_toot(self):
         raise NotImplementedError()
 
-    def __render_retoot(self):
+    def _render_retoot(self):
         raise NotImplementedError()
 
-    def __render_media_attachments(self):
+    def _render_media_attachments(self):
         raise NotImplementedError()
