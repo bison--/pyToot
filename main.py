@@ -7,9 +7,10 @@ def main_menu():
     print('*************')
     print('1. do Toot')
     print('2. read toots')
-    print('3. download user toots')
-    print('4. search user toots')
-    print('5. EXIT')
+    print('3. timeline scroller')
+    print('4. download user toots')
+    print('5. search user toots')
+    print('6. EXIT')
     print('*************')
     user_choice = input('> choice: ')
 
@@ -18,8 +19,10 @@ def main_menu():
     elif user_choice == '2':
         readToots.read_toots()
     elif user_choice == '3':
-        searchUserToots.do_download()
+        readToots.scroller_choice()
     elif user_choice == '4':
+        searchUserToots.do_download()
+    elif user_choice == '5':
         searchUserToots.do_search()
     else:
         return False

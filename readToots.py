@@ -1,6 +1,8 @@
 import requests
 import html2text
-from datetime import datetime
+import time
+import inc.helper as helper
+import inc.RateLimit as RateLimit
 from inc.TerminalImage import TerminalImage
 from inc.TootRendererBase import TootRendererBase
 from inc.TootRendererSimple import TootRendererSimple
@@ -20,20 +22,32 @@ terminal_image = TerminalImage()
 
 
 # Get the latest toots from the home timeline
-def get_toots(max_id=None, limit=conf.SHOW_TOOTS_AT_ONCE):
+def get_toots(max_id=None, limit=conf.SHOW_TOOTS_AT_ONCE, timelines='home', min_id=None):
+    if RateLimit.rate_limit.exceeded():
+        helper.print_color("Rate limit exceeded. Please wait {} seconds.".format(RateLimit.rate_limit.time_until_reset()), helper.Color.RED)
+        return []
+
     params = {}
 
     if max_id:
         params["max_id"] = max_id
 
+    if min_id:
+        params["min_id"] = min_id
+
     if limit:
         params["limit"] = limit
 
-    response = requests.get(base_url + "timelines/home", headers=headers, params=params)
+    response = requests.get(base_url + "timelines/" + timelines, headers=headers, params=params)
+    RateLimit.rate_limit.update(response.headers)
+
+    # rate limit debug
+    #helper.print_color(RateLimit.rate_limit, helper.Color.BLUE)
+
     if response.status_code == 200:
         return response.json()
     else:
-        print("Error retrieving toots.")
+        helper.print_color("Error retrieving toots. {} Code: {}".format(response.reason, response.status_code), helper.Color.RED)
         return []
 
 
@@ -92,10 +106,71 @@ def read_toots():
 
         more = input("> Do you want to see more toots? (Y/n) ")
         if more.lower() != "n":
-            toots = get_toots(toots[-1]["id"])
-            display_toots(toots)
+            toot_id = None
+            if toots:
+                toot_id = toots[-1]["id"]
+
+            new_toots = get_toots(toot_id)
+
+            if new_toots:
+                toots = new_toots
+                display_toots(toots)
         else:
             break
+
+
+def scroller_choice():
+    print('1. Home / My Timeline')
+    print('2. Server / Local')
+    print('3. Tag / Hashtag')
+    print('4. Cancel')
+    print()
+
+    choice = input("> Choose a timeline (empty for own): ").strip()
+    if choice == '1' or choice == '':
+        scroller('home')
+    elif choice == '2':
+        scroller('public')
+    elif choice == '3':
+        tag = input("> Enter a # tag: ")
+        tag = tag.replace('#', '')
+        scroller('tag/' + tag)
+    #elif choice == '5':
+    #    user = input("> Enter a user name: ")
+    #    scroller('accounts/' + user + '/statuses')
+    #elif choice == '6':
+    #    search_term = input("> Enter a search term: ")
+    #    scroller('search?limit=40&q=' + search_term)
+    elif choice == '4':
+        return
+    else:
+        print('Invalid choice')
+
+
+def scroller(timelines='home'):
+    # Get the first set of toots
+    toots = get_toots(limit=1, timelines=timelines)
+    toots.reverse()
+    display_toots(toots)
+
+    try:
+        while True:
+            toot_id = None
+            if toots:
+                toot_id = toots[0]["id"]
+
+            new_toots = get_toots(limit=1, min_id=toot_id, timelines=timelines)
+
+            if new_toots:
+                toots = new_toots
+                display_toots(toots)
+                time.sleep(conf.SCROLLER_DELAY_HAS_TOOTS)
+            else:
+                time.sleep(conf.SCROLLER_DELAY_HAS_NO_TOOTS)
+
+    except KeyboardInterrupt:
+        # allow canceling the scroller
+        return
 
 
 if __name__ == '__main__':

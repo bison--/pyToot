@@ -8,7 +8,14 @@ INSTANCE_USER_HANDLE = ''  # REQUIRED, without @, eg: 'bison' for @bison@mastodo
 LANGUAGE = 'en'
 SHOW_TOOTS_AT_ONCE = 10
 
+# 300 requests per 5 minutes is the limit for mastodon.social
+# seconds to wait before the timeline scroller requests the next toot if there was no new toot
+SCROLLER_DELAY_HAS_NO_TOOTS = 10
+# time you have to read a new toot before the scroller requests the next toot
+SCROLLER_DELAY_HAS_TOOTS = 5
+
 TERMINAL_IMAGES = True  # if requirements-full.txt is not installed, this will be set to False automatically
 TERMINAL_IMAGE_OPTIMIZER = 'space'
-TERMINAL_IMAGE_MAX_WIDTH = 80
+
+TERMINAL_IMAGE_MAX_WIDTH = 60  # -1 means auto-detected width
 TERMINAL_IMAGE_MAX_HEIGHT = 40

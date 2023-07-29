@@ -66,9 +66,19 @@ class TerminalImage:
         if not conf.TERMINAL_IMAGES:
             return
 
+        image_max_width = conf.TERMINAL_IMAGE_MAX_WIDTH
+        if image_max_width == -1:
+            try:
+                image_max_width = helper.get_terminal_width()
+                # image width debug
+                #helper.print_color('image_max_width: {}'.format(image_max_width), helper.Color.YELLOW)
+            except Exception as ex:
+                helper.print_color(ex, helper.Color.RED)
+                image_max_width = 80
+
         renderer = img2unicode.Renderer(
             default_optimizer=self.optimizer,
-            max_w=conf.TERMINAL_IMAGE_MAX_WIDTH,
+            max_w=image_max_width,
             max_h=conf.TERMINAL_IMAGE_MAX_HEIGHT
         )
 
