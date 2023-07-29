@@ -17,5 +17,5 @@ SCROLLER_DELAY_HAS_TOOTS = 5
 TERMINAL_IMAGES = True  # if requirements-full.txt is not installed, this will be set to False automatically
 TERMINAL_IMAGE_OPTIMIZER = 'space'
 
-TERMINAL_IMAGE_MAX_WIDTH = 60  # -1 means auto-detected width
-TERMINAL_IMAGE_MAX_HEIGHT = 40
+TERMINAL_IMAGE_MAX_WIDTH = -1     # -1 means auto-detected width
+TERMINAL_IMAGE_MAX_HEIGHT = None  # None means scaled to width without limit

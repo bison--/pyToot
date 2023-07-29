@@ -69,7 +69,7 @@ class TerminalImage:
         image_max_width = conf.TERMINAL_IMAGE_MAX_WIDTH
         if image_max_width == -1:
             try:
-                image_max_width = helper.get_terminal_width()
+                image_max_width = helper.get_terminal_width() / 2
                 # image width debug
                 #helper.print_color('image_max_width: {}'.format(image_max_width), helper.Color.YELLOW)
             except Exception as ex:
@@ -79,7 +79,8 @@ class TerminalImage:
         renderer = img2unicode.Renderer(
             default_optimizer=self.optimizer,
             max_w=image_max_width,
-            max_h=conf.TERMINAL_IMAGE_MAX_HEIGHT
+            max_h=conf.TERMINAL_IMAGE_MAX_HEIGHT,
+            allow_upscale=True
         )
 
         local_image = self.cacher.get_image_cached(image_path)
