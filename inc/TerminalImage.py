@@ -71,7 +71,7 @@ class TerminalImage:
             try:
                 image_max_width = helper.get_terminal_width() / 2
                 # image width debug
-                #helper.print_color('image_max_width: {}'.format(image_max_width), helper.Color.YELLOW)
+                # helper.print_color('image_max_width: {}'.format(image_max_width), helper.Color.YELLOW)
             except Exception as ex:
                 helper.print_color(ex, helper.Color.RED)
                 image_max_width = 80

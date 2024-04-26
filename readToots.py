@@ -91,8 +91,6 @@ def display_toots(toots):
 
         print('#' * 80)
 
-    return
-
 
 def read_toots():
     # Get the first set of toots

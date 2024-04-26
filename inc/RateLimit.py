@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import datetime
 from dateutil.tz import tz
 
 
@@ -14,9 +14,8 @@ class RateLimit:
         if not self.has_been_set:
             return False
 
-        if self.remaining == 0:
-            if self.time_until_reset() > 0:
-                return True
+        if self.remaining == 0 and self.time_until_reset() > 0:
+            return True
 
         return False
 

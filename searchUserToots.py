@@ -1,7 +1,6 @@
 import requests
 import html2text
 from datetime import datetime
-#from inc.TerminalImage import TerminalImage
 from inc.Cacher import Cacher
 import inc.mastodon_helper as mastodon_helper
 import conf_loader as conf
@@ -24,11 +23,6 @@ def search_user_toots(_user_name, search_term):
         if toot_contains(toot, search_term):
             readToots.display_toots([toot])
 
-            #print(toot["created_at"])
-            #print(toot["url"])
-            #print(toot["content"])
-            #print('*************')
-
     if toot_count == 0:
         print('No local cached toots found for user: {0} ({1})'.format(_user_name, user_id))
         print('Please download toots first with option 3 in the main menu.')
@@ -43,10 +37,12 @@ def toot_contains(toot, search_term):
 
 def save_toots(_toots, _user_id, stop_on_cache_hit):
     for toot in _toots:
-        if not cacher.save_user_toot(toot, _user_id):
-            if stop_on_cache_hit:
-                print('Toot already cached', toot['url'])
-                return False
+        if cacher.save_user_toot(toot, _user_id):
+            continue
+
+        if stop_on_cache_hit:
+            print('Toot already cached', toot['url'])
+            return False
 
     return True
 

@@ -16,10 +16,6 @@ class Cacher:
         if path_toots is None:
             path_toots = self.path_toots
 
-        #url_hash = hashlib.md5(
-        #   url.encode()
-        #).hexdigest()
-
         return os.path.join(path_toots, mastodon_helper.url_to_filename(url) + '.json')
 
     def _get_cache_image_file(self, url):
@@ -47,7 +43,6 @@ class Cacher:
         toot_id = toot['url']
         if toot_id is None:
             print('No toot url found', toot)
-            #toot_id = toot['uri']
             return False
 
         file_path = self._get_cache_toot_file(toot_id, os.path.join(self.path_user_toots, user_id))
@@ -111,4 +106,3 @@ class Cacher:
                 file.write(chunk)
 
         return True
-
