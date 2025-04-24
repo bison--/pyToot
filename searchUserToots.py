@@ -23,6 +23,9 @@ def search_user_toots(_user_name, search_term):
         if toot_contains(toot, search_term):
             readToots.display_toots([toot])
 
+        if toot_alt_contains(toot, search_term):
+            readToots.display_toots([toot])
+
     if toot_count == 0:
         print('No local cached toots found for user: {0} ({1})'.format(_user_name, user_id))
         print('Please download toots first with option 3 in the main menu.')
@@ -31,6 +34,14 @@ def search_user_toots(_user_name, search_term):
 def toot_contains(toot, search_term):
     if search_term in toot["content"].lower():
         return True
+
+    return False
+
+
+def toot_alt_contains(toot, search_term):
+    for attachment in toot["media_attachments"]:
+        if search_term in attachment["description"].lower():
+            return True
 
     return False
 
